@@ -11,4 +11,17 @@ public class HomeController {
   public String showHome() {
     return "반갑습니다.";
   }
+
+  @GetMapping("/home/main2")
+  @ResponseBody
+  public String showHome2() {
+    return "어서오세요";
+  }
+
+  @GetMapping("/home/main3")
+  @ResponseBody
+  public String showHome3() {
+    return "스프링부트 획기적이다.";
+  }
+
 }
