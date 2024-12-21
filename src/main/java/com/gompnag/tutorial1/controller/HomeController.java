@@ -1,8 +1,6 @@
 package com.gompnag.tutorial1.controller;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -13,9 +11,12 @@ import java.util.*;
 @Controller
 public class HomeController {
   int num;
+  List<Person> people;
+
 
   public HomeController() {
     num = -1;
+    people = new ArrayList<>();
   }
 
   @GetMapping("/home/main")
@@ -184,6 +185,24 @@ public class HomeController {
 
     return list;
   }
+
+  @GetMapping("/home/addPerson")
+  @ResponseBody
+  public String addPerson(String name, int age){
+    Person p = new Person(name, age);
+    System.out.println("p : " + p);
+
+    people.add(p);
+
+
+    return "%d번 사람이 추가되었습니다.".formatted(p.getId());
+  }
+
+  @GetMapping("/home/showPeople")
+  @ResponseBody
+  public List<Person> showPeople(){
+    return people;
+  }
 }
 
 class Article {
@@ -245,3 +264,20 @@ class Article2 {
   List<Integer> articleNo;
 }
 
+@AllArgsConstructor
+@Getter
+@ToString
+class Person {
+  private static int lastId;
+  private final int id;
+  private final String name;
+  private final int age;
+
+  static {
+    lastId = 0;
+  }
+
+  public Person(String name, int age) {
+    this(++lastId, name, age);
+  }
+}
