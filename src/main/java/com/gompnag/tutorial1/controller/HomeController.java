@@ -186,6 +186,15 @@ public class HomeController {
     return list;
   }
 
+  @GetMapping("/home/personTestcase")
+  @ResponseBody
+  public String personTestcase() {
+    people.add(new Person("홍길동", 11));
+    people.add(new Person("홍길순", 22));
+    people.add(new Person("임꺽정", 33));
+
+    return "테스트 케이스 추가";
+  }
   @GetMapping("/home/addPerson")
   @ResponseBody
   public String addPerson(String name, int age){
@@ -196,6 +205,32 @@ public class HomeController {
 
 
     return "%d번 사람이 추가되었습니다.".formatted(p.getId());
+  }
+
+  @GetMapping("/home/removePerson")
+  @ResponseBody
+  public String removePerson(int id){
+    /*
+    Person target = null;
+
+    for(Person p : people) {
+      if(p.getId() == id) {
+        target = p;
+        break;
+      }
+    }
+    if(target == null) {
+      return "%d번 사람이 존재하지 않습니다.".formatted(id);
+    }
+    //System.out.println(target);
+    people.remove(target);
+    */
+    boolean removed = people.removeIf(person -> person.getId() == id);
+    if(!removed) {
+      return "%d번 사람이 존재하지 않습니다.".formatted(id);
+    }
+
+    return "%d번 사람이 삭제되었습니다.".formatted(id);
   }
 
   @GetMapping("/home/showPeople")
