@@ -1,11 +1,15 @@
 package com.gompnag.tutorial1.controller;
 
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.*;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import java.io.IOException;
 import java.util.*;
 
 @Controller
@@ -233,11 +237,63 @@ public class HomeController {
     return "%d번 사람이 삭제되었습니다.".formatted(id);
   }
 
+  @GetMapping("home/modifyPerson")
+  @ResponseBody
+  public String modifyPerson(int id, String name, int age) {
+    /*
+    Person found = null;
+    for(Person p : people) {
+      if(p.getId() == id) {
+        found = p;
+        break;
+      }
+    }
+    if(found == null) {
+      return "%d번 사람이 존재하지 않습니다.".formatted(id);
+    }
+    */
+    Person found = people.stream()
+        .filter(p -> p.getId() == id)  // 해당 녀석이 참인 것만 필터링
+        .findFirst() // 찾은 것 중에 하나만 남는데, 그 하나 남은 것을 필터링
+        .orElse(null); // 없으면 null을 리턴
+
+    //System.out.println(found);
+    if(found == null) {
+      return "%d번 사람이 존재하지 않습니다.".formatted(id);
+    }
+    found.setName(name);
+    found.setAge(age);
+
+    return "%d번 사람이 수정되었습니다.".formatted(id);
+  }
+
   @GetMapping("/home/showPeople")
   @ResponseBody
   public List<Person> showPeople(){
     return people;
   }
+
+  @GetMapping("/home/cookie/increase")
+  @ResponseBody
+  public int showCookieIncrease(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+    //int age = Integer.parseInt(req.getParameter("age"));
+    //resp.getWriter().append("Hello, you are %d years old".formatted(age));
+    //resp.addCookie(new Cookie("age", "15"));
+    int countInCookie = 0;
+    if(req.getCookies() != null) {
+      countInCookie = Arrays.stream(req.getCookies())
+          .filter(cookie -> cookie.getName().equals("count"))
+          .map(cookie -> cookie.getValue())
+          .mapToInt(Integer::parseInt)
+          .findAny()
+          .orElse(0);
+    }
+    int newCountInCookie = countInCookie + 1;
+    resp.addCookie(new Cookie("count", newCountInCookie + ""));
+
+    return newCountInCookie;
+  }
+
 }
 
 class Article {
@@ -305,8 +361,10 @@ class Article2 {
 class Person {
   private static int lastId;
   private final int id;
-  private final String name;
-  private final int age;
+  @Setter
+  private String name;
+  @Setter
+  private int age;
 
   static {
     lastId = 0;
