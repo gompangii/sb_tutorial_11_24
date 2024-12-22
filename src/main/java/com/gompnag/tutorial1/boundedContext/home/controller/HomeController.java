@@ -6,6 +6,8 @@ import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.*;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -15,18 +17,29 @@ import java.io.IOException;
 import java.util.*;
 
 @Controller
+// 개발자가 스프링부트한테 말한다.
+// " 이 클래스는 웹 요청을 받아서 작업할 거야!"
+// "그리고 해당 클래스는 컨트롤러야!"
+
 public class HomeController {
   int num;
   List<Person> people;
+
+  /*
+  // 필드 주입
+  @Autowired
   private MemberService memberService;
+  */
 
+  private final MemberService memberService;
 
-  public HomeController() {
+  //생성자 주입
+  // @Autowired : 생략 가능
+  public HomeController(MemberService memberService) {
     num = -1;
     people = new ArrayList<>();
 
-    memberService = new MemberService();
-
+    this.memberService = memberService;
   }
 
   @GetMapping("/home/user1")

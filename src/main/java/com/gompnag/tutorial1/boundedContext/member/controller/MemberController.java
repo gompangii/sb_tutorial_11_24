@@ -2,6 +2,7 @@ package com.gompnag.tutorial1.boundedContext.member.controller;
 
 import com.gompnag.tutorial1.base.rsData.RsData;
 import com.gompnag.tutorial1.boundedContext.member.service.MemberService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -14,10 +15,20 @@ public class MemberController {
 
   private final MemberService memberService;
 
-  public MemberController() {
-    memberService = new MemberService();
+  // 생성자 주입
+  public MemberController(MemberService memberService) {
+    //memberService = new MemberService();
+    this.memberService = memberService;
+  }
+
+  /*
+  // 생성자 주입
+  @Autowired
+  public MemberController(MemberService memberService) {
+    this.memberService = memberService;
 
   }
+  */
 
   @GetMapping("/member/login")
   @ResponseBody
