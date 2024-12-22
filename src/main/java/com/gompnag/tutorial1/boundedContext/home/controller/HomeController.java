@@ -1,4 +1,4 @@
-package com.gompnag.tutorial1.controller;
+package com.gompnag.tutorial1.boundedContext.home.controller;
 
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
