@@ -2,6 +2,7 @@ package com.gompnag.tutorial1.boundedContext.member.controller;
 
 import com.gompnag.tutorial1.base.rsData.RsData;
 import com.gompnag.tutorial1.boundedContext.member.service.MemberService;
+import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -10,17 +11,19 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
+@AllArgsConstructor
 @Controller
 public class MemberController {
 
   private final MemberService memberService;
 
+  /*** @AllArgsConstructor  Lombok 어노테이션을 사용하면 아래 내용없어도 됨
   // 생성자 주입
   public MemberController(MemberService memberService) {
     //memberService = new MemberService();
     this.memberService = memberService;
   }
-
+  */
   /*
   // 생성자 주입
   @Autowired
