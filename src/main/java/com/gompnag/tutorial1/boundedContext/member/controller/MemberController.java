@@ -21,8 +21,8 @@ import java.util.Map;
 @AllArgsConstructor
 @Controller
 public class MemberController {
-
   private final MemberService memberService;
+  private final Rq rq;
 
   /*** @AllArgsConstructor  Lombok 어노테이션을 사용하면 아래 내용없어도 됨
   // 생성자 주입
@@ -42,10 +42,7 @@ public class MemberController {
 
   @GetMapping("/member/login")
   @ResponseBody
-  public RsData login(String username, String password, HttpServletRequest req, HttpServletResponse resp) {
-    Rq rq = new Rq(req, resp);
-
-
+  public RsData login(String username, String password) {
     if(username == null || username.trim().isEmpty()) {
       return RsData.of("F-3", "username(을)를 입력해주세요.");
     }
@@ -64,9 +61,7 @@ public class MemberController {
 
   @GetMapping("/member/logout")
   @ResponseBody
-  public RsData logout(HttpServletRequest req, HttpServletResponse resp) {
-    Rq rq = new Rq(req, resp);
-
+  public RsData logout() {
     boolean cookieRemoved = rq.removeCookie("loginedMemberId");
 
     if(!cookieRemoved) {
@@ -86,9 +81,7 @@ public class MemberController {
   }
   @GetMapping("/member/me")
   @ResponseBody
-  public RsData showMe(HttpServletRequest req, HttpServletResponse resp){
-    Rq rq = new Rq(req, resp);
-
+  public RsData showMe(){
     long loginedMemberId = rq.getCookieAsLong("loginedMemberId", 0);
 
     /*  아래 부분은 rq.getCookieAsLong 메서드로 이동
