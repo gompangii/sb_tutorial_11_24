@@ -1,9 +1,11 @@
 package com.gompnag.tutorial1.boundedContext.member.controller;
 
+import com.gompnag.tutorial1.base.rs.Rq;
 import com.gompnag.tutorial1.base.rsData.RsData;
 import com.gompnag.tutorial1.boundedContext.member.dto.Member;
 import com.gompnag.tutorial1.boundedContext.member.service.MemberService;
 import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.AllArgsConstructor;
@@ -40,7 +42,10 @@ public class MemberController {
 
   @GetMapping("/member/login")
   @ResponseBody
-  public RsData login(String username, String password, HttpServletResponse resp) {
+  public RsData login(String username, String password, HttpServletRequest req, HttpServletResponse resp) {
+    Rq rq = new Rq(req, resp);
+
+
     if(username == null || username.trim().isEmpty()) {
       return RsData.of("F-3", "username(을)를 입력해주세요.");
     }
@@ -49,8 +54,10 @@ public class MemberController {
     }
     RsData rsData = memberService.tryLogin(username, password);
     if(rsData.isSuccess()) {
-      long memberId = (long)rsData.getData();
-      resp.addCookie(new Cookie("loginedMemberId", memberId + ""));
+      //long memberId = (long)rsData.getData();
+      Member member = (Member) rsData.getData();
+      rq.setCookie("loginedMemberId", member.getId());
+      //resp.addCookie(new Cookie("loginedMemberId", memberId + ""));
     }
     return rsData;
   }
@@ -58,6 +65,14 @@ public class MemberController {
   @GetMapping("/member/logout")
   @ResponseBody
   public RsData logout(HttpServletRequest req, HttpServletResponse resp) {
+    Rq rq = new Rq(req, resp);
+
+    boolean cookieRemoved = rq.removeCookie("loginedMemberId");
+
+    if(!cookieRemoved) {
+      return RsData.of("F-1", "이미 로그아웃 상태입니다.");
+    }
+    /*  rq.removeCookie로 이동
     if(req.getCookies() != null) {
       Arrays.stream(req.getCookies())
           .filter(cookie -> cookie.getName().equals("loginedMemberId"))
@@ -66,15 +81,17 @@ public class MemberController {
             resp.addCookie(cookie);
           });
     }
-
+    */
     return RsData.of("S-1", "로그아웃 되었습니다.");
   }
   @GetMapping("/member/me")
   @ResponseBody
-  public RsData showMe(HttpServletRequest req){
-    long loginedMemberId = 0;
+  public RsData showMe(HttpServletRequest req, HttpServletResponse resp){
+    Rq rq = new Rq(req, resp);
 
+    long loginedMemberId = rq.getCookieAsLong("loginedMemberId", 0);
 
+    /*  아래 부분은 rq.getCookieAsLong 메서드로 이동
     if(req.getCookies() != null) {
       loginedMemberId = Arrays.stream(req.getCookies())
           .filter(cookie -> cookie.getName().equals("loginedMemberId"))
@@ -82,7 +99,7 @@ public class MemberController {
           .mapToLong(Long::parseLong)
           .findFirst()
           .orElse(0);
-    }
+    } */
 
     boolean isLogined = loginedMemberId > 0;
     if(!isLogined) {
