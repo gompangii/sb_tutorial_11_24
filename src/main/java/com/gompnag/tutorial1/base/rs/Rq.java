@@ -21,15 +21,27 @@ public class Rq {
   }
 
   public boolean removeCookie(String name) {
+    Cookie cookie = Arrays.stream(req.getCookies())
+        .filter(c-> c.getName().equals(name))
+        .findFirst()
+        .orElse(null);
+
+    if(cookie != null) {
+      cookie.setMaxAge(0);
+      resp.addCookie(cookie);
+      return true;
+    }
+
+    /*  위내용으로 코딩 변경  31강
     if(req.getCookies() != null) {
       Arrays.stream(req.getCookies())
           .filter(cookie -> cookie.getName().equals(name))
           .forEach(cookie -> {
-            cookie.setMaxAge(0);
+            cookie.setMaxAge(0);  // 쿠키 만료
             resp.addCookie(cookie);
           });
       return Arrays.stream(req.getCookies()).anyMatch(cookie -> cookie.getName().equals(name));
-    }
+    }*/
     return false;
   }
 
