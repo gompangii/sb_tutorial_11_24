@@ -25,6 +25,7 @@ public class MemberController {
   private final MemberService memberService;
   private final Rq rq;
 
+
   /*** @AllArgsConstructor  Lombok 어노테이션을 사용하면 아래 내용없어도 됨
   // 생성자 주입
   public MemberController(MemberService memberService) {
@@ -43,7 +44,26 @@ public class MemberController {
 
   @GetMapping("/member/login")
   @ResponseBody
-  public RsData login(String username, String password) {
+  public String showLogin(String username, String password) {
+    if (rq.isLogined()) {
+      return """
+          <h1>이미 로그인 되었습니다.</h1>
+          """.stripIndent();
+    }
+    return """
+        <h1>로그인</h1>
+        <form action="/member/doLogin">
+          <input type="text" name="username" placeholder="아이디" />
+          <input type="password" name="password" placeholder="비밀번호" />
+          <button type="submit">로그인</button>
+        </form>
+        """;
+  }
+
+
+  @GetMapping("/member/doLogin")
+  @ResponseBody
+   public RsData login(String username, String password) {
     if(username == null || username.trim().isEmpty()) {
       return RsData.of("F-3", "username(을)를 입력해주세요.");
     }
