@@ -137,4 +137,7 @@ public class Rq {
   }
 
 
+  public long getLoginedMember() {
+    return getSessionAsLong("loginedMemberId", 0);
+  }
 }

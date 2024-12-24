@@ -6,6 +6,7 @@ import com.gompnag.tutorial1.boundedContext.member.dto.Member;
 import com.gompnag.tutorial1.boundedContext.member.service.MemberService;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -97,13 +98,26 @@ public class MemberController {
     */
     return RsData.of("S-1", "로그아웃 되었습니다.");
   }
+
+  @GetMapping("/member/me")
+  public String showMe(Model model){
+    long loginedMeberId = rq.getLoginedMember();
+
+    Member member = memberService.findById(loginedMeberId);
+
+    model.addAttribute("member", member);
+
+    return "usr/member/me";
+  }
+
+  /***  아래 showMe()를 위 내용으로 변경(42강)
   @GetMapping("/member/me")
   @ResponseBody
   public RsData showMe(){
     //long loginedMemberId = rq.getCookieAsLong("loginedMemberId", 0);
     long loginedMemberId = rq.getSessionAsLong("loginedMemberId", 0);
 
-    /*  아래 부분은 rq.getCookieAsLong 메서드로 이동
+    /// / *  아래 부분은 rq.getCookieAsLong 메서드로 이동
     if(req.getCookies() != null) {
       loginedMemberId = Arrays.stream(req.getCookies())
           .filter(cookie -> cookie.getName().equals("loginedMemberId"))
@@ -111,7 +125,8 @@ public class MemberController {
           .mapToLong(Long::parseLong)
           .findFirst()
           .orElse(0);
-    } */
+    }
+    /// * /
 
     boolean isLogined = loginedMemberId > 0;
     if(!isLogined) {
@@ -121,6 +136,7 @@ public class MemberController {
 
     return RsData.of("S-1", "당신의 username(은)는 %s 입니다.".formatted(member.getUsername()));
   }
+   */
 
   @GetMapping("/member/session")
   @ResponseBody
