@@ -4,20 +4,10 @@ import com.gompnag.tutorial1.base.rs.Rq;
 import com.gompnag.tutorial1.base.rsData.RsData;
 import com.gompnag.tutorial1.boundedContext.member.dto.Member;
 import com.gompnag.tutorial1.boundedContext.member.service.MemberService;
-import jakarta.servlet.http.Cookie;
-import jakarta.servlet.http.HttpServlet;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
 import lombok.AllArgsConstructor;
-import org.apache.catalina.users.GenericGroup;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
-
-import java.util.Arrays;
-import java.util.LinkedHashMap;
-import java.util.Map;
 
 @AllArgsConstructor
 @Controller
@@ -43,8 +33,10 @@ public class MemberController {
   */
 
   @GetMapping("/member/login")
-  @ResponseBody
+  //@ResponseBody
   public String showLogin(String username, String password) {
+    return "usr/member/login";
+    /*  /resources/static/usr/member/login.html 로 대체
     if (rq.isLogined()) {
       return """
           <h1>이미 로그인 되었습니다.</h1>
@@ -52,12 +44,13 @@ public class MemberController {
     }
     return """
         <h1>로그인</h1>
-        <form action="/member/doLogin">
+        <form action="doLogin">
           <input type="text" name="username" placeholder="아이디" />
           <input type="password" name="password" placeholder="비밀번호" />
           <button type="submit">로그인</button>
         </form>
         """;
+     */
   }
 
 
