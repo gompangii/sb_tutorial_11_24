@@ -9,6 +9,7 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.AllArgsConstructor;
+import org.apache.catalina.users.GenericGroup;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -53,7 +54,8 @@ public class MemberController {
     if(rsData.isSuccess()) {
       //long memberId = (long)rsData.getData();
       Member member = (Member) rsData.getData();
-      rq.setCookie("loginedMemberId", member.getId());
+      rq.setSession("loginedMemberId", member.getId());
+      //rq.setCookie("loginedMemberId", member.getId());  //쿠키에 저장
       //resp.addCookie(new Cookie("loginedMemberId", memberId + ""));
     }
     return rsData;
@@ -62,7 +64,8 @@ public class MemberController {
   @GetMapping("/member/logout")
   @ResponseBody
   public RsData logout() {
-    boolean cookieRemoved = rq.removeCookie("loginedMemberId");
+    // boolean cookieRemoved = rq.removeCookie("loginedMemberId");
+    boolean cookieRemoved = rq.removeSession("loginedMemberId");
 
     if(!cookieRemoved) {
       return RsData.of("F-1", "이미 로그아웃 상태입니다.");
@@ -82,7 +85,8 @@ public class MemberController {
   @GetMapping("/member/me")
   @ResponseBody
   public RsData showMe(){
-    long loginedMemberId = rq.getCookieAsLong("loginedMemberId", 0);
+    //long loginedMemberId = rq.getCookieAsLong("loginedMemberId", 0);
+    long loginedMemberId = rq.getSessionAsLong("loginedMemberId", 0);
 
     /*  아래 부분은 rq.getCookieAsLong 메서드로 이동
     if(req.getCookies() != null) {
@@ -103,4 +107,9 @@ public class MemberController {
     return RsData.of("S-1", "당신의 username(은)는 %s 입니다.".formatted(member.getUsername()));
   }
 
+  @GetMapping("/member/session")
+  @ResponseBody
+  public String showSession(){
+    return rq.getSessionDebugInfo().replaceAll("\n", "<br>");
+  }
 }

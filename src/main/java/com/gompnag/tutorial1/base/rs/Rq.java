@@ -3,6 +3,7 @@ package com.gompnag.tutorial1.base.rs;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.springframework.web.context.annotation.RequestScope;
@@ -70,4 +71,60 @@ public class Rq {
         .findFirst()
         .orElse(defaultValue);
   }
+
+  private String getSessionAsStr(String name, String defaultValue) {
+    try {
+      String value = (String) req.getSession().getAttribute(name);
+
+      if(value == null) return defaultValue;
+
+      return value;
+    } catch (Exception e) {
+      return defaultValue;
+    }
+  }
+  public long getSessionAsLong(String name, long defaultValue) {
+    try {
+      long value = (long) req.getSession().getAttribute(name);
+
+      return value;
+    } catch (Exception e) {
+      return defaultValue;
+    }
+  }
+  public void setSession(String name, long value) {
+    HttpSession session = req.getSession();
+    session.setAttribute(name, value);
+
+    //System.out.println(getSessionDebugInfo());
+  }
+
+  public boolean removeSession(String name) {
+    HttpSession session = req.getSession();
+
+    // 세션을 가져왔는데 없으면 삭제를 못했다는 의미
+    if(session.getAttribute(name) == null) return false;
+
+    session.removeAttribute(name);
+
+    return true;
+  }
+
+  public String getSessionDebugInfo() {
+    HttpSession session = req.getSession();
+    String sessionId = session.getId();
+
+    var attributeNames = session.getAttributeNames();
+
+    StringBuilder sessionInfo = new StringBuilder("Session ID: " + sessionId + "\nAttributes:\n");
+    while (attributeNames.hasMoreElements()) {
+      String name = attributeNames.nextElement();
+      Object value = session.getAttribute(name);
+      sessionInfo.append(name).append(": ").append(value).append("\n");
+    }
+
+    return sessionInfo.toString();
+  }
+
+
 }
