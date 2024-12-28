@@ -2,7 +2,7 @@ package com.gompnag.tutorial1.boundedContext.member.controller;
 
 import com.gompnag.tutorial1.base.rs.Rq;
 import com.gompnag.tutorial1.base.rsData.RsData;
-import com.gompnag.tutorial1.boundedContext.member.dto.Member;
+import com.gompnag.tutorial1.boundedContext.member.entity.Member;
 import com.gompnag.tutorial1.boundedContext.member.service.MemberService;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Controller;

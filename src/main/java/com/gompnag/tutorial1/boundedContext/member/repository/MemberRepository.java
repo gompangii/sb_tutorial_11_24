@@ -1,6 +1,6 @@
 package com.gompnag.tutorial1.boundedContext.member.repository;
 
-import com.gompnag.tutorial1.boundedContext.member.dto.Member;
+import com.gompnag.tutorial1.boundedContext.member.entity.Member;
 import org.springframework.stereotype.Repository;
 
 import java.util.ArrayList;
