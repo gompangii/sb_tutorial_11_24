@@ -2,7 +2,7 @@ package com.gompnag.tutorial1.boundedContext.article.controller;
 
 import com.gompnag.tutorial1.base.rsData.RsData;
 import com.gompnag.tutorial1.boundedContext.article.entity.Article;
-import com.gompnag.tutorial1.boundedContext.article.repository.ArticleRepository;
+import com.gompnag.tutorial1.boundedContext.article.service.ArticleService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -15,28 +15,21 @@ import java.time.LocalDateTime;
 @RequestMapping("/article")
 @RequiredArgsConstructor // 필드 중에서 final 붙은 것만 인자로 입력받는 생성자 생성
 public class ArticleController {
-  private final ArticleRepository articleRepository;
+  private final ArticleService aricleService;
 
   @GetMapping("/write")
   @ResponseBody
   public RsData write(String subject, String content) {
-    Article article = Article
-        .builder()
-        .createDate(LocalDateTime.now())
-        .modifyDate(LocalDateTime.now())
-        .subject(subject)
-        .content(content)
-        .build();
+    if(subject == null || subject.trim().isEmpty()) {
+      return RsData.of("F-1", "subject(을)를 입력해주세요.");
+    }
 
-    articleRepository.save(article);
-    /*
-    Article article = new Article(subject, content);
+    if(content == null || content.trim().isEmpty()) {
+      return RsData.of("F-2", "content(을)를 입력해주세요.");
+    }
 
-    Article article = new Article();
-    article.setSubject(subject);
-    article.setContent(content);
-     */
+    Article createArticle = aricleService.write(subject, content);
 
-    return RsData.of("S-1", "%d번 글이 생성되었습니다.".formatted(article.getId()), article);
+    return RsData.of("S-1", "%d번 글이 생성되었습니다.".formatted(createArticle.getId()), createArticle);
   }
 }
